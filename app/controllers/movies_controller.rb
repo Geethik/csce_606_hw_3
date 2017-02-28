@@ -14,25 +14,45 @@ class MoviesController < ApplicationController
     @movies = Movie.all
     
     if params[:title_click]=="yes"
-      @title_class_clicked="hilite"
-      @movies = Movie.all.order(:title)
+      session[:title_class]="hilite"
+      session[:release_date_class]=""
     elsif params[:release_date_click]=="yes"
-      @release_date_class_clicked="hilite"
-      @movies = Movie.all.order(:release_date)
+      session[:title_class]=""
+      session[:release_date_class]="hilite"
     end
  
-    @all_ratings = Movie.distinct.pluck(:rating)
-    
-    if params[:ratings]==nil
-      @checked = Hash.new()
-      @all_ratings.each do |rating|
-       @checked[rating]=1
-      end
-   else
-      @checked=params[:ratings]
+    if session[:title_class]=="hilite"
+     @movies = @movies.all.order(:title)
+    elsif session[:release_date_class]=="hilite"
+     @movies = @movies.all.order(:release_date)
     end
     
-    @movies = @movies.where({rating: @checked.keys})
+    @all_ratings = Movie.distinct.pluck(:rating)
+    
+    if params[:ratings]!=nil
+     session[:checked]=params[:ratings]
+    end
+    
+    if session[:checked]==nil
+      session[:checked]=Hash.new()
+      @all_ratings.each do |rating|
+       session[:checked][rating]=1
+      end
+    end
+    
+    @movies = @movies.where({rating: session[:checked].keys})
+    
+    if session[:title_class]=="hilite" and params[:title_click]==nil 
+      params[:title_click]="yes"
+      redirect_to movies_path(params)
+    elsif session[:release_date_class]=="hilite" and params[:release_date_click]==nil
+      params[:release_date_click]="yes"
+      redirect_to movies_path(params)
+    elsif params[:ratings]==nil and session[:checked]!=nil
+      params[:ratings]=session[:checked]
+      #flash.keep
+      redirect_to movies_path(params)
+    end
     
   end
   

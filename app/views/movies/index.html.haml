@@ -5,7 +5,7 @@
   Include:
   - @all_ratings.each do |rating|
     = rating
-    = check_box_tag "ratings[#{rating}]",1,@checked[rating], :id=> "ratings_#{rating}"
+    = check_box_tag "ratings[#{rating}]",1,session[:checked][rating], :id=> "ratings_#{rating}"
   = submit_tag 'Refresh',  {:id => "ratings_submit"}
 
 
@@ -13,9 +13,9 @@
 %table#movies
   %thead
     %tr
-      %th{:id => "title_header",:class =>@title_class_clicked}=link_to 'Movie title', movies_path(:title_click =>"yes")
+      %th{:id => "title_header",:class =>session[:title_class]}=link_to 'Movie title', movies_path(:title_click =>"yes")
       %th Rating
-      %th{:id => "release_date_header",:class => @release_date_class_clicked}=link_to 'Release Date', movies_path(:release_date_click =>"yes")
+      %th{:id => "release_date_header",:class => session[:release_date_class]}=link_to 'Release Date', movies_path(:release_date_click =>"yes")
       %th More Info
   %tbody
     - @movies.each do |movie|
