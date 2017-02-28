@@ -21,8 +21,21 @@ class MoviesController < ApplicationController
       @movies = Movie.all.order(:release_date)
     end
  
+    @all_ratings = Movie.distinct.pluck(:rating)
+    
+    if params[:ratings]==nil
+      @checked = Hash.new()
+      @all_ratings.each do |rating|
+       @checked[rating]=1
+      end
+   else
+      @checked=params[:ratings]
+    end
+    
+    @movies = @movies.where({rating: @checked.keys})
+    
   end
-
+  
   def new
     # default: render 'new' template
   end
