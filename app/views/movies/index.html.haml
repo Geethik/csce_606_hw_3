@@ -4,9 +4,9 @@
 %table#movies
   %thead
     %tr
-      %th Movie Title
+      %th{:id => "title_header",:class =>@title_class_clicked}=link_to 'Movie title', movies_path(:title_click =>"yes")
       %th Rating
-      %th Release Date
+      %th{:id => "release_date_header",:class => @release_date_class_clicked}=link_to 'Release Date', movies_path(:release_date_click =>"yes")
       %th More Info
   %tbody
     - @movies.each do |movie|
